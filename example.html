@@ -2,49 +2,102 @@
 
 <head>
 
+	<title>
+		navim - test page
+	</title>
+
 	<script src="jQuery-1.3.2.js"></script>
 	<script src="jQuery-navim.js"></script>
 	<script>
-		$(function() { $("li").setVimNavigation("vertical"); });
-		$(function() { $("ul").setVimNavigation("horizontal"); });
+		function init_vim() {
+			$(function() { $("li").setVimNavigation("vertical"); });
+			$(function() { $("ul").setVimNavigation("horizontal"); });
+		}
+
+		$(init_vim);
 	</script>
+	<style type="text/css">
+		ul { margin:0; padding:0;}
+		pre {
+			background:#333;
+			color: #bbb;
+			border:3px solid #000;
+			width:auto;
+			padding:0.5em;
+		}
+
+		li{
+			border:2px solid #ddd;
+			background:#eee;
+			margin:5px;
+			padding:2em;
+			list-style-type:none;
+		}
+
+		li.navim_active {
+			border-color:#422;
+		}
+
+	</style>
 
 </head>
 
+<h1>
+	navim - test page
+</h1>
+<p>
+navim allows web developers to easily ad vim-style keyboard navigation to their page elements.
+</p>
+
+<p>
+	right now it's in early development, and only allows for up/down motion. But
+	stay tuned on <a href="http://gfxmonk.net">gfxmonk.net</a> for further announcements.
+</p>
+
+<p>
+The important parts of this page source are:
+</p>
+
+<h4>Javascript:</h4>
+<pre>
+function init_vim() {
+	$(function() { $("li").setVimNavigation("vertical"); });
+	$(function() { $("ul").setVimNavigation("horizontal"); });
+}
+
+$(init_vim);
+</pre>
+
+<h4>CSS:</h4>
+<pre>
+li{
+	border:2px solid #ddd;
+}
+
+li.navim_active {
+	border-color:#422;
+}
+</pre>
+
 <ul>
-	<li>1</li>
-	<li>1</li>
-	<li>1</li>
-	<li>1</li>
-	<li>1</li>
-	<li>1</li>
-	<li>1</li>
-	<li>1</li>
-	<li>1</li>
-	<li>1</li>
-	<li>1</li>
-	<li>1</li>
-	<li>1</li>
-	<li>1</li>
-	<li>1</li>
-	<li>1</li>
-	<li>1</li>
-	<li>1</li>
-	<li>1</li>
-	<li>1</li>
-	<li>1</li>
-	<li>1</li>
-	<li>1</li>
-	<li>1</li>
-	<li>1</li>
-	<li>1</li>
-	<li>1</li>
-	<li>1</li>
-	<li>1</li>
-	<li>1</li>
-	<li>1</li>
-	<li>1</li>
-	<li>1</li>
+	<li>1 - here's some content</li>
+	<li>2&nbsp;&nbsp;<b>note:</b> press "return" to open 
+		<a href="http://google.com">the first link in an
+		active item!</a>
+	</li>
+	<li>3</li>
+	<li>4</li>
+	<li>5</li>
+	<li>6</li>
+	<li>7</li>
+	<li>8</li>
+	<li>9</li>
+	<li>10</li>
+	<li>11</li>
+	<li>12</li>
+	<li>13</li>
+	<li>14</li>
+	<li>15 - note the active scrolling when you select the next item</li>
 </ul>
 
 </html>
