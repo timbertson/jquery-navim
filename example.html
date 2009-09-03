@@ -10,32 +10,38 @@
 	<script src="jQuery-navim.js"></script>
 	<script>
 		function init_vim() {
-			$(function() { $("li").setVimNavigation("vertical"); });
-			$(function() { $("ul").setVimNavigation("horizontal"); });
+			$(function() { $("li,pre").vimNavigation(); });
 		}
 
 		$(init_vim);
 	</script>
 	<style type="text/css">
 		ul { margin:0; padding:0;}
+		li, pre { max-width:600px; }
+
 		pre {
 			background:#333;
 			color: #bbb;
 			border:3px solid #000;
 			width:auto;
 			padding:0.5em;
+			margin:5px;
 		}
 
 		li{
 			border:2px solid #ddd;
 			background:#eee;
 			margin:5px;
-			padding:2em;
+			padding:2em 0.5em;
 			list-style-type:none;
 		}
 
 		li.navim_active {
 			border-color:#422;
+		}
+
+		pre.navim_active {
+			border-color:#b44;
 		}
 
 	</style>
@@ -54,30 +60,56 @@ navim allows web developers to easily ad vim-style keyboard navigation to their 
 	stay tuned on <a href="http://gfxmonk.net">gfxmonk.net</a> for further announcements.
 </p>
 
+<p>Currently supported keys:</p>
+<dl>
+	<dt>j, k</dt>
+	<dd>down, up</dd>
+
+	<dt>return</dt>
+	<dd>
+		perform an action on the currently selected element (by default, this will
+		click the first link in the element)
+	</dd>
+
+	<dt>G, gg</dt>
+	<dd>bottom of page, top of page</dd>
+</dl>
+
+<p>Planned:</p>
+<dl>
+	<dt>h,l</dt>
+	<dd>left and right</dd>
+
+	<dt>n,p</dt>
+	<dd>load next and previous pages</dd>
+</dl>
+
 <p>
-The important parts of this page source are:
+The important parts of this page source are the javascript to set the navigation items.
+In this case, I'm using all <code>pre</code> and <code>li</code> elements - you can use any jQuery collection here though:
 </p>
 
 <h4>Javascript:</h4>
 <pre>
 function init_vim() {
-	$(function() { $("li").setVimNavigation("vertical"); });
-	$(function() { $("ul").setVimNavigation("horizontal"); });
+  $(function() { $("pre,li").vimNavigation(); });
 }
 
 $(init_vim);
 </pre>
 
-<h4>CSS:</h4>
-<pre>
-li{
-	border:2px solid #ddd;
-}
+<p>And of course the CSS. To set a style specific to the <em>currently selected</em> navigation element, add a CSS rule for elements with class <code>navim_active</code>.
 
-li.navim_active {
-	border-color:#422;
-}
+<p>If you like, you can also override the "action" callback, like so:</p>
+<pre>
+$.vimNavigationAction( function(elem) {
+  alert("The current element's contents are: " + elem.html());
+});
 </pre>
+
+
+<p>Here's some more &lt;li&gt; elements for you to select (using "j" and "k")</p>
+<p>&nbsp;</p>
 
 <ul>
 	<li>1 - here's some content</li>

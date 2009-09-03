@@ -1,3 +1,17 @@
+/*
+ * TODO:
+ * - figure out left/right navigation
+ * - G, gg navigatoin
+ * - next/prev link specification
+ * - only scroll when the element doesn't fit (not on *every* navigation change)
+ * - the "first" selection (i.e when there's no current selection) should be the first
+ *   selectable element whose top() is (j:greater k:less-than) the current scroll offset
+ * - also, maybe if the current element is completely off-screen, a new
+ *   element should be picked according to the above rule
+ * 
+ */
+
+
 var jQuery_navim_plugin = {}
 
 jQuery_navim_plugin.navigationItems = {}
@@ -81,8 +95,9 @@ jQuery.vimNavigationAction = function(callback) {
 	jQuery_navim_plugin.util.action = callback;
 };
 
-jQuery.fn.setVimNavigation = function(type, onAction) {
+jQuery.fn.vimNavigation = function() {
 	var collection = Array();
+	var type="vertical";
 	this.each(function(){ collection.push(this); });
 	jQuery_navim_plugin.navigationItems[type] = collection;
 	jQuery_navim_plugin.ensureActive();
