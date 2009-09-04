@@ -3,39 +3,77 @@
  * - figure out left/right navigation
  * - G, gg navigatoin
  * - next/prev link specification
- * - only scroll when the element doesn't fit (not on *every* navigation change)
- * - the "first" selection (i.e when there's no current selection) should be the first
- *   selectable element whose top() is (j:greater k:less-than) the current scroll offset
- * - also, maybe if the current element is completely off-screen, a new
- *   element should be picked according to the above rule
+ * - bottom-of-page when scrolling past last item
  * 
  */
 
 
+function _inspect(obj) {
+	var str = "";
+	for(attr in obj) {
+		str += ">> " + attr + ": " + obj[attr];
+		str += "\n"
+	}
+	return str;
+}
+
+function _l(s) {
+	if(typeof(console) != 'undefined') {
+		console.log(s);
+	}
+}
+
 var jQuery_navim_plugin = {}
 
-jQuery_navim_plugin.navigationItems = {}
+jQuery_navim_plugin.navigationItems = []
 jQuery_navim_plugin.started = false
 jQuery_navim_plugin.activeClassName = "navim_active";
 
 jQuery_navim_plugin.util = {
-	go: function(amount, direction) {
-		var userMapping = jQuery_navim_plugin.navigationItems;
-		console.log(userMapping);
+	go: function(amount) {
+		var elems = jQuery_navim_plugin.navigationItems;
 		var state = jQuery_navim_plugin.state;
-		if(!direction in userMapping) return;
-		var elems = userMapping[direction];
-		if(!direction in state) state[direction] = 0;
-		var newIndex = state[direction] + amount;
-		//TODO: what about overflow?
-		if(newIndex < 0) {
-			this.selectElement(null);
-			state[direction] = -1;
-			return;
+		var newindex;
+		if(state.vertical == null) {
+			var details;
+			if(amount > 0 || $(window).scrollTop() > 0) {
+				// if we're at the top, stay there when pressing "k"
+				details = this.getFirstElement();
+			} else {
+				details = [null, null];
+			}
+			newIndex = details[0];
+			selectedItem = details[1];
+		} else {
+			newIndex = state.vertical + amount;
+			if(newIndex < 0) {
+				selectedItem = null;
+				newIndex = null;
+			} else {
+				if(elems.length <= newIndex) {
+					newIndex = elems.length - 1;
+				}
+				selectedItem = elems[newIndex];
+			}
 		}
-		if(elems.length <= newIndex) return;
-		state[direction] = newIndex;
-		this.selectElement(elems[newIndex]);
+		state.vertical = newIndex;
+		this.selectElement(selectedItem);
+	},
+
+	getFirstElement: function() {
+		var win = jQuery(window);
+		_l("SELECTING THE MOST APPROPRIATE ITEM");
+		var collection = jQuery_navim_plugin.navigationItems;
+		var selectObject = null;
+		var selectIndex = 0;
+		_l(collection.length);
+		for(var i=0; i<collection.length; i++) {
+			var item = collection[i];
+			selectObject = item;
+			selectIndex = i;
+			if($(item).offset().top > win.scrollTop()) break;
+		}
+		return [selectIndex, selectObject];
 	},
 
 	selectElement: function(elem) {
@@ -56,7 +94,7 @@ jQuery_navim_plugin.util = {
 	action: function(elem) {
 		var links = jQuery("a[href]", elem);
 		if(links.length > 0) {
-			console.log(links.eq(0));
+			_l(links.eq(0));
 			//TODO: why can't i just click() the link?
 			document.location.href = links.eq(0).attr('href');
 		}
@@ -64,23 +102,20 @@ jQuery_navim_plugin.util = {
 };
 
 jQuery_navim_plugin.state = {
-	vertical: -1,
-	horizontal: -1,
+	vertical: null,
 	currentElement: null
 }
 
 jQuery_navim_plugin.keyHandler = function(e) {
-	console.log("keypress: " + e.which);
+	_l("keypress: " + e.which);
 	var u = jQuery_navim_plugin.util;
 	var mapping = {
-		104: function() {u.go(1, 'horizontal');},
-		106: function() {u.go(1, 'vertical');},
-		107: function() {u.go(-1, 'vertical');},
-		108: function() {u.go(-1, 'horizontal');},
+		106: function() {u.go(1);},
+		107: function() {u.go(-1);},
 		13:  function() {u.action(jQuery_navim_plugin.state.currentElement);},
 	};
 	if(e.which in mapping) {
-		console.log("action!");
+		_l("action!");
 		mapping[e.which]();
 	}
 }
@@ -97,9 +132,8 @@ jQuery.vimNavigationAction = function(callback) {
 
 jQuery.fn.vimNavigation = function() {
 	var collection = Array();
-	var type="vertical";
 	this.each(function(){ collection.push(this); });
-	jQuery_navim_plugin.navigationItems[type] = collection;
+	jQuery_navim_plugin.navigationItems = collection;
 	jQuery_navim_plugin.ensureActive();
 }
 
@@ -108,6 +142,66 @@ jQuery.fn.scrollTo = function() {
 	var padding = 20;
 	var doc = jQuery('html,body')
 	var speed = 50;
-	doc.animate({scrollTop: offset.top - padding, scrollLeft: offset.left - padding}, speed);
+	var win = $(window);
+
+	var bounds = {
+		height: win.height(),
+		width: win.width(),
+		top: win.scrollTop(),
+		bottom: win.scrollTop() + win.height(),
+		left: win.scrollLeft(),
+		right: win.scrollLeft() + win.width()
+	};
+
+	var content = {
+		height: this.outerHeight(),
+		width: this.outerWidth(),
+		top: offset.top,
+		bottom: offset.top + this.outerHeight(),
+		left: offset.left,
+		right: offset.left + this.outerWidth()
+	};
+
+
+	//_l("bounds = " + _inspect(bounds) + ", content = " + _inspect(content));
+
+	function scrollH(offset) {
+		doc.animate({scrollLeft: offset}, speed);
+	};
+
+	function scrollV(offset) {
+		_l("scrolling to vertical: "+ offset);
+		doc.animate({scrollTop: offset}, speed);
+	};
+
+	// vertical scrolling
+	if(bounds.bottom < content.bottom) {
+		_l("needs downwards scrolling");
+		// content extends below bottom margin
+		if(content.height + padding > bounds.height) {
+			_l("but it won't fit on-screen - scrolling to top");
+			// just scroll to the top (since we can't get it all in)
+			scrollV(content.top - padding);
+		} else {
+			scrollV(content.bottom - bounds.height + padding);
+		}
+	} else if(bounds.top > content.top) {
+		_l("scrolling up to show content");
+		// content extends above bottom margin
+		scrollV(content.top - padding);
+	}
+
+	// horizontal scrolling
+	if(bounds.right < content.right) {
+		// content extends past right margin
+		if(content.width + padding > bounds.width) {
+			scrollH(content.left - padding);
+		} else {
+			scrollH(content.right - bounds.width + padding);
+		}
+	} else if(bounds.left > content.left) {
+		// content extends before left margin
+		scrollV(content.left - padding);
+	}
 }
 

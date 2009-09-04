@@ -28,6 +28,21 @@
 			margin:5px;
 		}
 
+		dl {
+			margin-left: 2em;
+		}
+
+		dt {
+			font-weight:bold;
+			margin-top:1em;
+		}
+
+		dd {
+			margin-left:1em;
+			padding-left:0;
+			color:#777;
+		}
+
 		li{
 			border:2px solid #ddd;
 			background:#eee;
@@ -52,12 +67,14 @@
 	navim - test page
 </h1>
 <p>
-navim allows web developers to easily ad vim-style keyboard navigation to their page elements.
+	Navim allows web developers to easily ad vim-style keyboard navigation to their page elements.
 </p>
 
 <p>
-	right now it's in early development, and only allows for up/down motion. But
-	stay tuned on <a href="http://gfxmonk.net">gfxmonk.net</a> for further announcements.
+	Right now it's in early development, and only allows for up/down motion. But
+	if people are interested, I'll work on making it more fully-featured.
+	To be honest, I imagine this will be sufficient for 90% of potential uses.
+	Stay tuned on <a href="http://gfxmonk.net">gfxmonk.net</a> or check out the <a href="http://github.com/gfxmonk/jquery-navim/">GitHub project</a> for further development.
 </p>
 
 <p>Currently supported keys:</p>
@@ -67,26 +84,15 @@ navim allows web developers to easily ad vim-style keyboard navigation to their 
 
 	<dt>return</dt>
 	<dd>
-		perform an action on the currently selected element (by default, this will
-		click the first link in the element)
+		perform an action on the currently selected element<br />
+		(by default, this will click the first link in the element)
 	</dd>
-
-	<dt>G, gg</dt>
-	<dd>bottom of page, top of page</dd>
-</dl>
-
-<p>Planned:</p>
-<dl>
-	<dt>h,l</dt>
-	<dd>left and right</dd>
-
-	<dt>n,p</dt>
-	<dd>load next and previous pages</dd>
 </dl>
 
 <p>
 The important parts of this page source are the javascript to set the navigation items.
-In this case, I'm using all <code>pre</code> and <code>li</code> elements - you can use any jQuery collection here though:
+In this case, I'm using all <code>pre</code> and <code>li</code> elements - you can use any jQuery collection here though -
+most likely you'll want to use a CSS class selector:
 </p>
 
 <h4>Javascript:</h4>
@@ -129,7 +135,9 @@ $.vimNavigationAction( function(elem) {
 	<li>12</li>
 	<li>13</li>
 	<li>14</li>
-	<li>15 - note the active scrolling when you select the next item</li>
+	<li>15 - some would call this the end. Of the demo, that is. Not the end
+	of the internet. That would be bigger, and would hopefully have some
+	cool explosions.</li>
 </ul>
 
 </html>
