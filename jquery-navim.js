@@ -8,21 +8,6 @@
  */
 
 
-function _inspect(obj) {
-	var str = "";
-	for(attr in obj) {
-		str += ">> " + attr + ": " + obj[attr];
-		str += "\n"
-	}
-	return str;
-}
-
-function _l(s) {
-	if(typeof(console) != 'undefined') {
-		console.log(s);
-	}
-}
-
 var jQuery_navim_plugin = {}
 
 jQuery_navim_plugin.navigationItems = []
@@ -62,11 +47,9 @@ jQuery_navim_plugin.util = {
 
 	getFirstElement: function() {
 		var win = jQuery(window);
-		_l("SELECTING THE MOST APPROPRIATE ITEM");
 		var collection = jQuery_navim_plugin.navigationItems;
 		var selectObject = null;
 		var selectIndex = 0;
-		_l(collection.length);
 		for(var i=0; i<collection.length; i++) {
 			var item = collection[i];
 			selectObject = item;
@@ -94,7 +77,6 @@ jQuery_navim_plugin.util = {
 	action: function(elem) {
 		var links = jQuery("a[href]", elem);
 		if(links.length > 0) {
-			_l(links.eq(0));
 			//TODO: why can't i just click() the link?
 			document.location.href = links.eq(0).attr('href');
 		}
@@ -107,7 +89,6 @@ jQuery_navim_plugin.state = {
 }
 
 jQuery_navim_plugin.keyHandler = function(e) {
-	_l("keypress: " + e.which);
 	var u = jQuery_navim_plugin.util;
 	var mapping = {
 		106: function() {u.go(1);},
@@ -115,7 +96,6 @@ jQuery_navim_plugin.keyHandler = function(e) {
 		13:  function() {u.action(jQuery_navim_plugin.state.currentElement);},
 	};
 	if(e.which in mapping) {
-		_l("action!");
 		mapping[e.which]();
 	}
 }
@@ -162,31 +142,24 @@ jQuery.fn.scrollTo = function() {
 		right: offset.left + this.outerWidth()
 	};
 
-
-	//_l("bounds = " + _inspect(bounds) + ", content = " + _inspect(content));
-
 	function scrollH(offset) {
 		doc.animate({scrollLeft: offset}, speed);
 	};
 
 	function scrollV(offset) {
-		_l("scrolling to vertical: "+ offset);
 		doc.animate({scrollTop: offset}, speed);
 	};
 
 	// vertical scrolling
 	if(bounds.bottom < content.bottom) {
-		_l("needs downwards scrolling");
 		// content extends below bottom margin
 		if(content.height + padding > bounds.height) {
-			_l("but it won't fit on-screen - scrolling to top");
 			// just scroll to the top (since we can't get it all in)
 			scrollV(content.top - padding);
 		} else {
 			scrollV(content.bottom - bounds.height + padding);
 		}
 	} else if(bounds.top > content.top) {
-		_l("scrolling up to show content");
 		// content extends above bottom margin
 		scrollV(content.top - padding);
 	}

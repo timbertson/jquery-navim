@@ -6,8 +6,8 @@
 		navim - test page
 	</title>
 
-	<script src="jQuery-1.3.2.js"></script>
-	<script src="jQuery-navim.js"></script>
+	<script src="jquery-1.3.2.js"></script>
+	<script src="jquery-navim.js"></script>
 	<script>
 		function init_vim() {
 			$(function() { $("li,pre").vimNavigation(); });
@@ -67,7 +67,11 @@
 	navim - test page
 </h1>
 <p>
-	Navim allows web developers to easily ad vim-style keyboard navigation to their page elements.
+	Navim is a <a href="http://jquery.com/"</a>jQuery</a> plugin that allows web developers to easily ad vim-style keyboard navigation to their page elements.
+</p>
+
+<p>
+	Get the latest version of <a href="http://github.com/gfxmonk/jquery-navim/blob/master/jquery-navim.js">jquery-navim.js</a>, and try it out today!
 </p>
 
 <p>
@@ -90,9 +94,7 @@
 </dl>
 
 <p>
-The important parts of this page source are the javascript to set the navigation items.
-In this case, I'm using all <code>pre</code> and <code>li</code> elements - you can use any jQuery collection here though -
-most likely you'll want to use a CSS class selector:
+The important part of this page source is the javascript to set the navigation items:
 </p>
 
 <h4>Javascript:</h4>
@@ -104,7 +106,12 @@ function init_vim() {
 $(init_vim);
 </pre>
 
-<p>And of course the CSS. To set a style specific to the <em>currently selected</em> navigation element, add a CSS rule for elements with class <code>navim_active</code>.
+<p>
+In this case, I'm using all <code>pre</code> and <code>li</code> elements - you can use any jQuery collection here though -
+most likely you'll want to use a CSS class selector.
+</p>
+
+<p>And of course, you can (and should) style the currently selected item with CSS. To set a style specific to the <em>currently selected</em> navigation element, add a CSS rule for elements with class <code>navim_active</code>.
 
 <p>If you like, you can also override the "action" callback, like so:</p>
 <pre>
@@ -114,7 +121,7 @@ $.vimNavigationAction( function(elem) {
 </pre>
 
 
-<p>Here's some more &lt;li&gt; elements for you to select (using "j" and "k")</p>
+<p>Here's some more &lt;li&gt; elements for you to select (using "j" and "k"):</p>
 <p>&nbsp;</p>
 
 <ul>
@@ -135,7 +142,7 @@ $.vimNavigationAction( function(elem) {
 	<li>12</li>
 	<li>13</li>
 	<li>14</li>
-	<li>15 - some would call this the end. Of the demo, that is. Not the end
+	<li>15 - Some would call this the end. Of the demo, that is. Not the end
 	of the internet. That would be bigger, and would hopefully have some
 	cool explosions.</li>
 </ul>
