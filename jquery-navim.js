@@ -4,21 +4,28 @@
  * - G, gg navigatoin
  * - next/prev link specification
  * - bottom-of-page when scrolling past last item
- * 
+ *
  */
 
 
 var jQuery_navim_plugin = {}
 
-jQuery_navim_plugin.navigationItems = []
+jQuery_navim_plugin.navigationItems = [];
+jQuery_navim_plugin.delegate = null;
 jQuery_navim_plugin.started = false
 jQuery_navim_plugin.activeClassName = "navim_active";
 
 jQuery_navim_plugin.util = {
-	go: function(amount) {
-		var elems = jQuery_navim_plugin.navigationItems;
+	get_elem_via_delegate: function(amount) {
 		var state = jQuery_navim_plugin.state;
-		var newindex;
+		var method = amount > 0 ? "down" : "up";
+		var currentElement = state.currentElement;
+		return jQuery_navim_plugin.delegate[method](currentElement);
+	},
+
+	get_elem_via_navigation_items: function(amount) {
+		var state = jQuery_navim_plugin.state;
+		var elems = jQuery_navim_plugin.navigationItems;
 		if(state.vertical == null) {
 			var details;
 			if(amount > 0 || $(window).scrollTop() > 0) {
@@ -42,10 +49,27 @@ jQuery_navim_plugin.util = {
 			}
 		}
 		state.vertical = newIndex;
+		return selectedItem;
+	},
+
+	go: function(amount) {
+		// (should be "self", but isn't when acting as
+		// an dvent callback)
+		var slf = jQuery_navim_plugin.util;
+
+		var selectedItem;
+		if(jQuery_navim_plugin.delegate != null) {
+			console.log("delegate")
+			selectedItem = slf.get_elem_via_delegate(amount);
+		} else {
+			console.log("items")
+			selectedItem = slf.get_elem_via_navigation_items(amount);
+		}
 		this.selectElement(selectedItem);
 	},
 
 	getFirstElement: function() {
+		//gets the first [index, element] pair for *after* the current scroll offset
 		var win = jQuery(window);
 		var collection = jQuery_navim_plugin.navigationItems;
 		var selectObject = null;
@@ -110,12 +134,17 @@ jQuery.vimNavigationAction = function(callback) {
 	jQuery_navim_plugin.util.action = callback;
 };
 
+jQuery.vimNavigation = function(delegate) {
+	jQuery_navim_plugin.delegate = delegate;
+	jQuery_navim_plugin.ensureActive();
+};
+
 jQuery.fn.vimNavigation = function() {
 	var collection = Array();
 	this.each(function(){ collection.push(this); });
 	jQuery_navim_plugin.navigationItems = collection;
 	jQuery_navim_plugin.ensureActive();
-}
+};
 
 jQuery.fn.scrollTo = function() {
 	var offset = this.offset();
