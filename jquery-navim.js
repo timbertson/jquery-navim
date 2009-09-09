@@ -20,7 +20,9 @@ jQuery_navim_plugin.util = {
 		var state = jQuery_navim_plugin.state;
 		var method = amount > 0 ? "down" : "up";
 		var currentElement = state.currentElement;
-		return jQuery_navim_plugin.delegate[method](currentElement);
+		var elem = jQuery_navim_plugin.delegate[method](currentElement);
+		if(elem && "length" in elem && elem.length == 0) elem = null;
+		return elem;
 	},
 
 	get_elem_via_navigation_items: function(amount) {
@@ -59,10 +61,8 @@ jQuery_navim_plugin.util = {
 
 		var selectedItem;
 		if(jQuery_navim_plugin.delegate != null) {
-			console.log("delegate")
 			selectedItem = slf.get_elem_via_delegate(amount);
 		} else {
-			console.log("items")
 			selectedItem = slf.get_elem_via_navigation_items(amount);
 		}
 		this.selectElement(selectedItem);

@@ -15,14 +15,18 @@
 			// delegate callbacks
 			var delegate = {
 				up: function(currentElement) {
-				console.log("UP!")
-					if(currentElement == null) return $('.scrollable').eq(0);
-					return $(currentElement).next('.scrollable');
+					if(currentElement == null) return null;
+					return $(currentElement).prev('.scrollable');
 				},
 
 				down: function(currentElement) {
-					if(currentElement == null) return null;
-					return $(currentElement).prev('.scrollable');
+					if(currentElement == null) return $('.scrollable').eq(0);
+					var next_elem = $(currentElement).next('.scrollable');
+					if(next_elem.length == 0) {
+						return currentElement;
+					} else {
+						return next_elem;
+					}
 				}
 			};
 
@@ -34,7 +38,7 @@
 	</script>
 	<style type="text/css">
 		ul { margin:0; padding:0;}
-		li, pre { max-width:600px; }
+		li.scrollable, pre { max-width:600px; }
 
 		pre {
 			background:#333;
@@ -60,7 +64,7 @@
 			color:#777;
 		}
 
-		li{
+		li.scrollable{
 			border:2px solid #ddd;
 			background:#eee;
 			margin:5px;
@@ -89,7 +93,7 @@
 	cases, for example:
 </p>
 
-<ul>
+<ol>
 	<li>You use ajax to add/remove elements - without a delegate, you'd have to
 	reinitialize jvim whenever your page contents change (which could be a lot)</li>
 
@@ -98,15 +102,44 @@
 
 	<li>You want more control of the selection process - maybe you want to skip
 	over hidden elements, or load a new page when the last element is scrolled past.
-	It's up to you...</li>
-</ul>
+	</li>
+</ol>
 
+<p>
+	It's up to you...
+</p>
 
 <p>
 </p>
 
 <h4>The javascript for this page is:</h4>
 <pre>
+function init_vim() {
+	// note: a scenario this simple should just use the standard
+	// mode, rather than a delegate. This is just to illustrate the
+	// delegate callbacks
+	var delegate = {
+		up: function(currentElement) {
+			if(currentElement == null) return null;
+			return $(currentElement).prev('.scrollable');
+		},
+
+		down: function(currentElement) {
+			if(currentElement == null) return $('.scrollable').eq(0);
+			var next_elem = $(currentElement).next('.scrollable');
+			if(next_elem.length == 0) {
+				return currentElement;
+			} else {
+				return next_elem;
+			}
+		}
+	};
+
+	// now install our navigation delegate with navim:
+	$.vimNavigation(delegate);
+}
+
+$(init_vim);
 </pre>
 
 <p>
