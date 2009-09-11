@@ -104,6 +104,7 @@ jQuery_navim_plugin.util = {
 		var old_elem = jQuery_navim_plugin.state.currentElement;
 		slf.hasTabbed = false;
 		if(old_elem != null) {
+			jQuery("input:focus").blur();
 			old_elem.blur();
 			old_elem.removeClass(jQuery_navim_plugin.activeClassName);
 		}
@@ -137,7 +138,7 @@ jQuery_navim_plugin.state = {
 }
 
 jQuery_navim_plugin.keyHandler = function(e) {
-	if(jQuery("input:focus").length > 0) return;
+	if(jQuery("input:focus").length > 0 && e.which in [13, 0]) return true;
 	var u = jQuery_navim_plugin.util;
 	var mapping = {
 		106: function() {u.go(1);  return false;},
