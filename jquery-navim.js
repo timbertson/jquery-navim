@@ -113,6 +113,7 @@ jQuery_navim_plugin.state = {
 }
 
 jQuery_navim_plugin.keyHandler = function(e) {
+	if(jQuery("input:focus").length > 0) return;
 	var u = jQuery_navim_plugin.util;
 	var mapping = {
 		106: function() {u.go(1);},
@@ -121,6 +122,7 @@ jQuery_navim_plugin.keyHandler = function(e) {
 	};
 	if(e.which in mapping) {
 		mapping[e.which]();
+		return false;
 	}
 }
 
