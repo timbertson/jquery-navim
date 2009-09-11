@@ -84,8 +84,11 @@ jQuery_navim_plugin.util = {
 	},
 
 	selectElement: function(elem) {
-		if(jQuery_navim_plugin.state.currentElement != null)
-			jQuery_navim_plugin.state.currentElement.removeClass(jQuery_navim_plugin.activeClassName);
+		var old_elem = jQuery_navim_plugin.state.currentElement;
+		if(old_elem != null) {
+			old_elem.blur();
+			old_elem.removeClass(jQuery_navim_plugin.activeClassName);
+		}
 		if(elem == null) {
 			jQuery_navim_plugin.state.currentElement = null;
 			$('document,body').scrollTo();
