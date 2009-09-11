@@ -5,6 +5,9 @@
  * - next/prev link specification
  * - bottom-of-page when scrolling past last item
  *
+ * - make actions work when the selected elemt is an anchor
+ * - make <shift+enter> open links in a new window/tab
+ *
  */
 
 
@@ -83,8 +86,24 @@ jQuery_navim_plugin.util = {
 		return [selectIndex, selectObject];
 	},
 
+	tabNext: function() {
+		// select the first (non-hidden) input element within the active one
+		var slf = jQuery_navim_plugin.util;
+		var current = jQuery_navim_plugin.state.currentElement;
+		if(slf.hasTabbed || (!current)) return true;
+		var inputs = jQuery('input[type!=hidden]', current);
+		if(inputs.length > 0) {
+			inputs.eq(0).focus();
+			slf.hasTabbed = true;
+			return false;
+		}
+		return true;
+	},
+
 	selectElement: function(elem) {
+		var slf = jQuery_navim_plugin.util;
 		var old_elem = jQuery_navim_plugin.state.currentElement;
+		slf.hasTabbed = false;
 		if(old_elem != null) {
 			old_elem.blur();
 			old_elem.removeClass(jQuery_navim_plugin.activeClassName);
@@ -119,13 +138,14 @@ jQuery_navim_plugin.keyHandler = function(e) {
 	if(jQuery("input:focus").length > 0) return;
 	var u = jQuery_navim_plugin.util;
 	var mapping = {
-		106: function() {u.go(1);},
-		107: function() {u.go(-1);},
-		13:  function() {u.action(jQuery_navim_plugin.state.currentElement);},
+		106: function() {u.go(1);  return false;},
+		107: function() {u.go(-1); return false;},
+		13:  function() {u.action(jQuery_navim_plugin.state.currentElement); return false;},
+		0: function()   {return u.tabNext();},
 	};
+	//alert(e.which);
 	if(e.which in mapping) {
-		mapping[e.which]();
-		return false;
+		return mapping[e.which]();
 	}
 }
 
