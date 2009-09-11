@@ -5,7 +5,6 @@
  * - next/prev link specification
  * - bottom-of-page when scrolling past last item
  *
- * - make actions work when the selected elemt is an anchor
  * - make <shift+enter> open links in a new window/tab
  *
  */
@@ -122,6 +121,9 @@ jQuery_navim_plugin.util = {
 
 	action: function(elem) {
 		var links = jQuery("a[href]", elem);
+		if(elem.attr("nodeName").match(/^a$/i)) {
+			links = $(elem);
+		}
 		if(links.length > 0) {
 			//TODO: why can't i just click() the link?
 			document.location.href = links.eq(0).attr('href');
