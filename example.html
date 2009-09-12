@@ -115,8 +115,9 @@ most likely you'll want to use a CSS class selector.
 
 <p>If you like, you can also override the "action" callback, like so:</p>
 <pre>
-$.vimNavigationAction( function(elem) {
-  alert("The current element's contents are: " + elem.html());
+$.vimNavigationAction( function(elem, shiftPressed) {
+  alert("The current element's contents are: " + elem.html() +
+    ", and shift is " + (shiftPressed ? "" : "NOT ") + "pressed");
 });
 </pre>
 
